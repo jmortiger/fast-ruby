@@ -1412,6 +1412,29 @@ String#delete_prefix:  4111531.1 i/s
           String#sub:   814725.3 i/s - 5.05x  slower
 ```
 
+##### `String#sub` vs `String#delete_prefix` vs `String#[]` [code](code/string/sub-vs-delete_prefix-vs-substring.rb)
+
+[Ruby 2.5 introduced](https://bugs.ruby-lang.org/issues/12694) `String#delete_prefix`.
+Note that this can only be used for removing characters from the start of a string,
+and `String#[Range]` is only applicable when it's known the substring is at the
+start, and the substring's length is known.
+
+```
+$ ruby -v ../fast-ruby/code/string/sub-vs-delete_prefix-vs-substring.rb 
+ruby 3.2.3 (2024-01-18 revision 52bb2ac0a6) [x86_64-linux-gnu]
+Calculating -------------------------------------
+      String#[Range]      4.494M (± 4.7%) i/s  (222.53 ns/i) -     22.775M in   5.080785s
+String#delete_prefix      3.980M (± 6.2%) i/s  (251.27 ns/i) -     20.072M in   5.067337s
+     String#[Regexp]      1.371M (± 5.7%) i/s  (729.45 ns/i) -      6.898M in   5.050030s
+          String#sub      1.184M (± 6.3%) i/s  (844.85 ns/i) -      5.936M in   5.040405s
+
+Comparison:
+      String#[Range]:  4493765.8 i/s
+String#delete_prefix:  3979705.8 i/s - 1.13x  slower
+     String#[Regexp]:  1370898.6 i/s - 3.28x  slower
+          String#sub:  1183638.7 i/s - 3.80x  slower
+```
+
 ##### `String#sub` vs `String#chomp` vs `String#delete_suffix` [code](code/string/sub-vs-chomp-vs-delete_suffix.rb)
 
 [Ruby 2.5 introduced](https://bugs.ruby-lang.org/issues/13665) `String#delete_suffix`
